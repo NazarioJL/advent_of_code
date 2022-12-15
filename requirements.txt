@@ -1,0 +1,4 @@
+-e
+click
+Jinja2
+pytest

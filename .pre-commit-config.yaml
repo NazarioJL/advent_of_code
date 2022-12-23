@@ -42,4 +42,4 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies: [attrs==22.1.0]
-        args: [--no-strict-optional, --ignore-missing-imports]
+        args: [--no-strict-optional, --ignore-missing-imports, --python-version=3.10]

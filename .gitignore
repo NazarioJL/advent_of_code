@@ -240,3 +240,10 @@ Temporary Items
 .apdisk
 
 .idea/
+
+# Env files
+./.env
+
+
+# Advent of Code input files
+./inputs

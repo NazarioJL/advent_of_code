@@ -2,11 +2,12 @@ import os
 import time
 import urllib.error
 import urllib.request
-from pathlib import Path
 from typing import cast
 
 import click
 from advent_of_code import settings
+from advent_of_code.utilities import get_input
+from advent_of_code.utilities import get_project_root
 from jinja2 import Template
 
 
@@ -80,7 +81,7 @@ def create_solution(
     )
 
     input_path = input_path or str(get_project_root())
-    input_base_path = os.path.join(input_path, "inputs", f"year{year}")
+    input_base_path = os.path.join(input_path, "inputs", f"{year}")
     input_file_name = f"day{day:02}.txt"
     input_file_path = os.path.join(input_base_path, input_file_name)
 
@@ -162,38 +163,34 @@ def create_solution(
     raise SystemExit(0)
 
 
+@main.command(name="create-template")
+@click.option(
+    "-y",
+    "--year",
+    type=int,
+    required=True,
+    help="Advent of Code year to generate the template for",
+)
+@click.option(
+    "-d",
+    "--day",
+    "day",
+    type=int,
+    required=True,
+    help="Advent of Code day to generate the template for",
+)
+def create_template(year: int, day: int) -> None:
+    print(
+        render_template(
+            year=year, day=day, template_source=settings.SOLUTION_JINJA_TEMPLATE
+        )
+    )
+
+
 def render_template(year: int, day: int, template_source: str) -> str:
     template = Template(source=template_source, keep_trailing_newline=True)
     result = cast(str, template.render(year=year, day=day))
     return result
-
-
-def get_input(year: int, day: int, cookie: str) -> str:
-    with open("./.env") as f:
-        f.read()
-
-    url = f"https://adventofcode.com/{year}/day/{day}/input"
-    req = urllib.request.Request(url, headers={"Cookie": cookie})
-    return urllib.request.urlopen(req).read().decode()  # type: ignore
-
-
-def get_project_root() -> Path:
-    iterations = 0
-
-    current = Path(os.getcwd())
-    found = False
-
-    while not found:
-        if iterations > 15:
-            SystemExit(
-                "Could not find the project root, make sure you're inside the "
-                "'advent_of_code' project"
-            )
-        if os.path.isfile(os.path.join(current, "pyproject.toml")):
-            found = True
-        else:
-            current = current.parent
-    return current
 
 
 if __name__ == "__main__":

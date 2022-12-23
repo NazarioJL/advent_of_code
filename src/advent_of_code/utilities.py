@@ -1,5 +1,9 @@
+import os
 import time
+import urllib.error
+import urllib.request
 from functools import wraps
+from pathlib import Path
 from typing import Any
 from typing import Callable
 from typing import cast
@@ -12,13 +16,20 @@ from advent_of_code.type_defs import Solution
 F = TypeVar("F", bound=Callable[..., Any])
 
 
-def print_solution(sol: Solution) -> None:  # type: ignore
-    def fmt_time(duration: float) -> str:
-        unit = "ms"
-        if duration < 100:
-            duration *= 1000
+def print_solution(sol: Solution) -> None:  # type: ignore # noqa: C901
+    def fmt_time(duration_ns: int) -> str:
+        duration = float(duration_ns)
+        unit = "ns"
+        if duration > 1000:
+            duration /= 1000
             unit = "μs"
-        return f"{int(duration)} {unit}"
+        if duration > 1000:
+            duration /= 1000
+            unit = "ms"
+        if duration > 1000:
+            duration /= 1000
+            unit = "s"
+        return f"{duration:.2f} {unit}"
 
     def fmt_ans(ans: Ans) -> str:  # type: ignore
         if ans is None:
@@ -50,14 +61,55 @@ def print_solution(sol: Solution) -> None:  # type: ignore
 
 def time_solve(func: F) -> F:
     @wraps(func)
-    def wrapper(*args, **kwargs):  # type: ignore
-        before = time.time()
+    def wrapper(*args, **kwargs) -> tuple[..., int]:  # type: ignore
+        before = time.perf_counter_ns()
         result = func(*args, **kwargs)
-        after = time.time()
-        dur = (after - before) * 1000
+        after = time.perf_counter_ns()
+        dur = after - before
         if isinstance(result, tuple):
-            return *result, dur
+            return *result, dur  # type: ignore
         else:
             return result, dur
 
     return cast(F, wrapper)
+
+
+def get_input_data(year: int, day: int, relative_dir: str | None = None) -> str:
+    file_name = f"day{day:02}.txt"
+    file_dir = f"{year}"
+
+    if relative_dir is None:
+        relative_dir = os.path.join(get_project_root(), "inputs", file_dir, file_name)
+
+    file_path = os.path.join(relative_dir, file_dir, file_name)
+
+    with open(file_path) as f:
+        return f.read()
+
+
+def get_input(year: int, day: int, cookie: str) -> str:
+    with open("./.env") as f:
+        f.read()
+
+    url = f"https://adventofcode.com/{year}/day/{day}/input"
+    req = urllib.request.Request(url, headers={"Cookie": cookie})
+    return urllib.request.urlopen(req).read().decode()  # type: ignore
+
+
+def get_project_root() -> Path:
+    iterations = 0
+
+    current = Path(os.getcwd())
+    found = False
+
+    while not found:
+        if iterations > 15:
+            SystemExit(
+                "Could not find the project root, make sure you're inside the "
+                "'advent_of_code' project"
+            )
+        if os.path.isfile(os.path.join(current, "pyproject.toml")):
+            found = True
+        else:
+            current = current.parent
+    return current

@@ -8,3 +8,5 @@ To install the package execute:
 ```shell
 pip install .
 ```
+
+## Console Scripts

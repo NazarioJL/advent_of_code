@@ -5,15 +5,21 @@ import urllib.request
 from typing import cast
 
 import click
+from jinja2 import Template
+
 from advent_of_code import settings
 from advent_of_code.utilities import download_input_data
 from advent_of_code.utilities import get_project_root
-from jinja2 import Template
 
 
 @click.group()
 def main() -> None:
     pass
+
+
+@main.command(name="getinfo")
+def get_info() -> None:
+    click.secho(f"{get_project_root()}", fg="cyan", bg="red")
 
 
 @main.command(name="create-solution")
@@ -120,7 +126,7 @@ def create_solution(
         click.secho("Skipping file download...", fg="yellow")
 
     module_path = solution_path or os.path.join(
-        get_project_root(), f"src/advent_of_code/solutions/year{year}"
+        get_project_root(), f"advent_of_code/solutions/year{year}"
     )
     solution_path = os.path.join(module_path, f"day_{day:02}.py")
     init_path = os.path.join(module_path, "__init__.py")

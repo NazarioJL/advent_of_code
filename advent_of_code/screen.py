@@ -24,7 +24,7 @@ class Screen:
         screen_origin: ScreenOrigin = ScreenOrigin.TOP_LEFT,
         default_pixel: str = ".",
         line_markers: str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        title: str = "==== Virtual Screen ====",
+        title: str | None = "==== Virtual Screen ====",
     ):
         self._start_x = start_x
         self._start_y = start_y
@@ -46,8 +46,10 @@ class Screen:
         self._buffer[(x, y)] = s
         return s
 
-    def render(self) -> None:
+    def clear(self) -> None:
+        self._buffer.clear()
 
+    def render(self) -> None:
         if self._screen_origin == ScreenOrigin.TOP_LEFT:
             rows = range(self._start_y, self._end_y)
         elif self._screen_origin == ScreenOrigin.BOTTOM_LEFT:

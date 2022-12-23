@@ -6,11 +6,13 @@ from typing import TypeAlias
 from typing import TypeVar
 from typing import Union
 
-from advent_of_code.exceptions import IncorrectReturnTypeError
 from attr import define
 from attr import field
 
-AnswerType: TypeAlias = int | float | str
+from advent_of_code.exceptions import IncorrectReturnTypeError
+from advent_of_code.type_defs import Solution as Solution2
+
+AnswerType: TypeAlias = int | float | str | None
 
 
 @define(kw_only=True, frozen=True)
@@ -76,7 +78,10 @@ def print_solution(sol: Solution) -> None:  # noqa: C901
 
 
 SolutionReturnTypeDef: TypeAlias = Union[
-    Solution, tuple[PartialAnswer, PartialAnswer], tuple[AnswerType, AnswerType]
+    Solution,
+    Solution2,
+    tuple[PartialAnswer, PartialAnswer],
+    tuple[AnswerType, AnswerType],
 ]
 
 SolutionFuncTypeDef: TypeAlias = Callable[[str], SolutionReturnTypeDef]
@@ -132,7 +137,8 @@ class AdventOfCode:
 
             return wrapper
 
-        self._solutions[(year, day)] = inner(_original_func)
+        if _original_func is not None:
+            self._solutions[(year, day)] = inner(_original_func)
         return inner
 
     def partial(

@@ -1,5 +1,4 @@
--e
-attr
+attrs
 click
 Jinja2
 pytest

@@ -2,10 +2,11 @@ SOLUTION_JINJA_TEMPLATE = """\
 import pytest
 
 from advent_of_code.core import aoc
+from advent_of_code.core import print_solution
 from advent_of_code.exceptions import SolutionNotImplementedError
 from advent_of_code.type_defs import Solution
 from advent_of_code.utilities import get_input_data
-from advent_of_code.utilities import print_solution
+
 
 YEAR = {{ year }}
 DAY = {{ day }}

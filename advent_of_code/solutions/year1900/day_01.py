@@ -2,6 +2,7 @@ import operator
 from functools import reduce
 
 import pytest
+
 from advent_of_code.core import aoc
 from advent_of_code.core import print_solution
 from advent_of_code.parsers import parse_ints
@@ -39,4 +40,5 @@ if __name__ == "__main__":
     print_solution(solve(get_input_data(YEAR, DAY)))
     print(aoc.count_solutions())
     import os
+
     print(os.getenv("PYTHONPATH"))

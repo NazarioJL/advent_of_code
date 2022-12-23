@@ -13,3 +13,7 @@ def parse_lines(
 ) -> Iterable[TItem]:
     for line in input_s.splitlines():
         yield tx_func(line)
+
+
+def parse_ints(s: str) -> list[int]:
+    return list(int(n) for n in s.splitlines())

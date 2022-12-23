@@ -6,7 +6,7 @@ from typing import cast
 
 import click
 from advent_of_code import settings
-from advent_of_code.utilities import get_input
+from advent_of_code.utilities import download_input_data
 from advent_of_code.utilities import get_project_root
 from jinja2 import Template
 
@@ -103,7 +103,7 @@ def create_solution(
 
         for i in range(5):
             try:
-                s = get_input(year=year, day=day, cookie=cookie)
+                s = download_input_data(year=year, day=day, cookie=cookie)
             except urllib.error.URLError as e:
                 print(f"zzz: not ready yet: {e}")
                 time.sleep(1)

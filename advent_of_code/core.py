@@ -117,7 +117,10 @@ class AdventOfCode:
 
                 if isinstance(result, Solution):
                     return Solution(
-                        part_1=result.part_1, part_2=result.part_2, duration_ns=dur
+                        # This overwrites any duration information from prev solution
+                        part_1=result.part_1,
+                        part_2=result.part_2,
+                        duration_ns=dur,
                     )
                 elif isinstance(result, tuple):
                     if len(result) != 2:

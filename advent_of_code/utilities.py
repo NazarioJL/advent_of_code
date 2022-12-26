@@ -18,22 +18,17 @@ def get_input_data(year: int, day: int, relative_dir: str | None = None) -> str:
 
 
 def download_input_data(year: int, day: int, cookie: str) -> str:
-    with open("./.env") as f:
-        f.read()
-
     url = f"https://adventofcode.com/{year}/day/{day}/input"
     req = urllib.request.Request(url, headers={"Cookie": cookie})
     return urllib.request.urlopen(req).read().decode()  # type: ignore
 
 
 def get_project_root() -> Path:
-    iterations = 0
-
     current = Path(os.getcwd())
     found = False
 
     while not found:
-        if iterations > 15:
+        if current == "/":
             SystemExit(
                 "Could not find the project root, make sure you're inside the "
                 "'advent_of_code' project"

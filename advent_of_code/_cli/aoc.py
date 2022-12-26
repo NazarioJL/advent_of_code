@@ -104,9 +104,11 @@ def create_solution(
 
     if (file_exists and force) or not file_exists:
         click.secho(f"Downloading file to {input_file_path}", fg="green")
-        with open("./.env") as f:
-            cookie = f.read().strip()
 
+        cookie_location = os.path.join(get_project_root(), ".env")
+
+        with open(cookie_location) as f:
+            cookie = f.read().strip()
         for i in range(5):
             try:
                 s = download_input_data(year=year, day=day, cookie=cookie)

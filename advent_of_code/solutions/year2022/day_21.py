@@ -169,7 +169,7 @@ hmdt: 32
     ((TEST_INPUT, (152, 301)),),
 )
 def test_solve(input_s: str, expected: str) -> None:
-    assert solve(input_s) == expected
+    assert solve(input_s).as_tuple() == expected
 
 
 if __name__ == "__main__":

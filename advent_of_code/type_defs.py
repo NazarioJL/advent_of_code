@@ -18,6 +18,11 @@ class Coord2D(NamedTuple):
         x_, y_ = other
         return Coord2D(x=self.x + x_, y=self.y + y_)
 
+    def __mul__(self, other: object) -> "Coord2D":
+        if not isinstance(other, int):
+            raise TypeError("Can only scale by an `int` value")
+        return Coord2D(x=self.x * other, y=self.y * other)
+
 
 class CardinalPoints(Enum):
     NORTH = auto()

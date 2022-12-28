@@ -25,8 +25,8 @@ TEST_INPUT = \"\"\"\\
     ("input_s", "expected"),
     ((TEST_INPUT, ()),),
 )
-def test_solve(input_s: str, expected: str) -> None:
-    assert solve(input_s).as_tuple() == ()
+def test_solve(input_s: str, expected: tuple[()]) -> None:
+    assert solve(input_s).as_tuple() == expected
 
 
 if __name__ == "__main__":

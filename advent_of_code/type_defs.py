@@ -24,6 +24,23 @@ class Coord2D(NamedTuple):
         return Coord2D(x=self.x * other, y=self.y * other)
 
 
+class Coord3D(NamedTuple):
+    x: int
+    y: int
+    z: int
+
+    def __add__(self, other: object) -> "Coord3D":
+        if not isinstance(other, tuple):
+            raise ValueError("expected a tuple object")
+        x_, y_, z_ = other
+        return Coord3D(x=self.x + x_, y=self.y + y_, z=self.z + z_)
+
+    def __mul__(self, other: object) -> "Coord3D":
+        if not isinstance(other, int):
+            raise TypeError("Can only scale by an `int` value")
+        return Coord3D(x=self.x * other, y=self.y * other, z=self.z * other)
+
+
 class CardinalPoints(Enum):
     NORTH = auto()
     SOUTH = auto()

@@ -1,5 +1,6 @@
 import re
 from enum import Enum
+from math import prod
 from typing import Iterable
 from typing import NamedTuple
 
@@ -250,6 +251,7 @@ def estimate_geode(state: State, remaining_steps: int, blueprint: Blueprint) -> 
 
 def should_prune(state: State, remaining_steps: int, blueprint: Blueprint) -> bool:
     # This is the max element we can produce if we build one robot every step from now
+    # TODO: Analyze why this is not working
     effective_steps = remaining_steps - 1
     next_element_total = SUM_OF_ELEMENTS[effective_steps]
 
@@ -300,8 +302,7 @@ def get_max_robot_counts(blueprint: Blueprint) -> dict[Mineral, int]:
     }
 
 
-def maximize(blueprint: Blueprint) -> int:
-    max_steps = 24
+def maximize(blueprint: Blueprint, max_steps: int) -> int:
     start = State(total_ore_robots=1)
     max_geodes = 0
     visited = set()
@@ -364,15 +365,23 @@ def maximize(blueprint: Blueprint) -> int:
 def solve(s: str) -> Solution:
     blueprints = list(parse_input(s))
 
-    results = {}
+    results_1 = {}
 
     for blueprint in blueprints:
-        max_geodes = maximize(blueprint=blueprint)
-        results[blueprint.blueprint_id] = max_geodes
+        max_geodes = maximize(blueprint=blueprint, max_steps=24)
+        results_1[blueprint.blueprint_id] = max_geodes
 
-    part_1 = sum(bpid * mg for bpid, mg in results.items())
+    part_1 = sum(bpid * mg for bpid, mg in results_1.items())
 
-    return part_1, 0
+    results_2 = []
+    for blueprint in blueprints[:3]:  # take only first 3
+        max_geodes = maximize(blueprint=blueprint, max_steps=32)
+        print(f"{blueprint.blueprint_id} -> {max_geodes}")
+        results_2.append(max_geodes)
+
+    part_2 = prod(results_2)
+
+    return part_1, part_2
 
 
 TEST_INPUT = """\
@@ -392,7 +401,7 @@ Blueprint 2:
 
 @pytest.mark.parametrize(
     ("input_s", "expected"),
-    ((TEST_INPUT, (33, 0)),),
+    ((TEST_INPUT, (33, 3472)),),
 )
 def test_solve(input_s: str, expected: tuple[()]) -> None:
     assert solve(input_s).as_tuple() == expected

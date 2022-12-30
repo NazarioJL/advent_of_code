@@ -2,8 +2,10 @@ from abc import ABC
 from enum import Enum
 from itertools import cycle
 from typing import Iterable
+from typing import NamedTuple
 
 import pytest
+from more_itertools import peekable
 from more_itertools import take
 
 from advent_of_code.core import aoc
@@ -184,7 +186,6 @@ def simulate(
 ) -> int:
     rock_gen = take(rock_count, (rock_type() for rock_type in cycle(rock_types)))
     move_gen = cycle(jet_moves)
-
     for rock in rock_gen:
         rock.translate(Coord2D(2, chamber.top + 3 + 1))  # drop rock
         while True:
@@ -199,20 +200,128 @@ def simulate(
     return chamber.top + 1  # zero indexed, add 1
 
 
+def get_thumbprint(chamber: Chamber) -> int:
+    """Create a hashable thumbprint of the chamber"""
+    result = 0
+    rows = 18
+    for row in range(chamber.top, chamber.top - rows, -1):
+        for i in (0, 1, 2, 3, 4, 5, 6):
+            if (i, row) in chamber.occupied:
+                result |= 1
+            result <<= 1
+
+    return result
+
+
+class State(NamedTuple):
+    rock_type: type[Rock]
+    jet_move_index: int
+    chamber_thumbprint: int
+
+
+class PreCycleInfo(NamedTuple):
+    rock_index: int
+    height: int
+
+
+class CycleResult(NamedTuple):
+    end_index: int
+    start_index: int
+    cycle_height: int
+
+
+def find_cycle(
+    chamber: Chamber,
+    rock_types: Iterable[type[Rock]],
+    jet_moves: str,
+) -> CycleResult:
+    MAX_ROCKS = 100000
+    rock_gen = take(MAX_ROCKS, (rock_type() for rock_type in cycle(rock_types)))
+    move_gen = peekable(cycle(enumerate(jet_moves)))
+    visited: dict[State, PreCycleInfo] = {}
+
+    for rock_index, rock in enumerate(rock_gen):
+        jet_index, _ = move_gen.peek()
+        state = State(
+            rock_type=type(rock),
+            jet_move_index=jet_index,
+            chamber_thumbprint=get_thumbprint(chamber),
+        )
+
+        if state in visited:
+            cycle_start_state_value = visited[state]
+            return CycleResult(
+                start_index=cycle_start_state_value.rock_index,
+                end_index=rock_index,
+                cycle_height=chamber.top + 1 - cycle_start_state_value.height,
+            )
+
+        else:
+            visited[state] = PreCycleInfo(rock_index=rock_index, height=chamber.top + 1)
+
+        rock.translate(Coord2D(2, chamber.top + 3 + 1))  # drop rock
+        while True:
+            _, jet_move = next(move_gen)
+            jet_move_tx = DIRECTION_TO_OFFSET[jet_move]
+            try_move(rock=rock, chamber=chamber, move=jet_move_tx)
+            if not try_move(rock=rock, chamber=chamber, move=DOWN):
+                break
+        chamber.add_rock(rock)
+
+    raise UnexpectedConditionError("Unable to find a cycle")
+
+
 @aoc.solution(year=YEAR, day=DAY)
 def solve(s: str) -> Solution:
-
     rock_types = (HorLineRock, CrossRock, CornerRock, VertLineRock, SquareRock)
     jet_moves = s.strip()
-    chamber_1 = Chamber()
     part_1 = simulate(
-        chamber=chamber_1,
-        rock_count=2022,
+        chamber=Chamber(),
         jet_moves=jet_moves,
+        rock_count=2022,
         rock_types=rock_types,
     )
 
-    return part_1, 1514285714288
+    cycle_result = find_cycle(
+        chamber=Chamber(), rock_types=rock_types, jet_moves=jet_moves
+    )
+
+    # We assume that there is a cyclic behavior in our simulation, each cycle
+    # contributes to a specific height
+    #
+    # We will model a cycle like the following:
+    #
+    #    PRE      CYCLE0       CYCLE1  ... CYCLE_N-1    REM
+    # └───────┴────────────┴────────────┴────────────┴───────┘
+    # total = height(pre) + n * height(cycle) + height(rem)
+    #
+    # In our simulation we only need to do PRE, CYCLE0, REM as the rest is cyclic.
+    #
+    # Rearranging as:
+    # total = height(pre + cycle + rem) + (n - 1) * height(cycle)
+    #
+    # We can then simulate the count for the first part
+
+    TOTAL_ROCKS = 1000000000000
+
+    pre_cycle_rock_count = cycle_result.start_index
+    cycle_rock_count = cycle_result.end_index - cycle_result.start_index
+    total_cycles, post_cycle_rock_count = divmod(
+        TOTAL_ROCKS - pre_cycle_rock_count, cycle_rock_count
+    )
+
+    single_cycle_height = simulate(
+        chamber=Chamber(),
+        jet_moves=jet_moves,
+        rock_count=pre_cycle_rock_count + cycle_rock_count + post_cycle_rock_count,
+        rock_types=rock_types,
+    )
+
+    remaining_cycles_height = (total_cycles - 1) * cycle_result.cycle_height
+
+    part_2 = single_cycle_height + remaining_cycles_height
+
+    return part_1, part_2
 
 
 TEST_INPUT = """\

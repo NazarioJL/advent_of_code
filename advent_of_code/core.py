@@ -39,7 +39,7 @@ class Solution:
         )
 
 
-def print_solution(sol: Solution) -> None:  # noqa: C901
+def print_solution(sol: Solution, multiline_block: bool = False) -> None:  # noqa: C901
     def fmt_time(duration_ns: int) -> str:
         duration = float(duration_ns)
         unit = "ns"
@@ -60,14 +60,21 @@ def print_solution(sol: Solution) -> None:  # noqa: C901
         else:
             if ans.duration_ns is None:
                 if isinstance(ans.value, str) and "\n" in ans.value:
+                    ans_str = ans.value
+
+                    if multiline_block:
+                        ans_str = ans_str.replace("#", "█").replace(".", " ")
                     # multi line answer
-                    return f"\n{ans.value}"
+                    return f"\n{ans_str}"
                 else:
                     return f": {ans.value}"
             else:
                 if isinstance(ans.value, str) and "\n" in ans.value:
+                    ans_str = ans.value
                     # multi line answer
-                    return f"({fmt_time(ans.duration_ns)})\n{ans.value}"
+                    if multiline_block:
+                        ans_str = ans_str.replace("#", "█").replace(".", " ")
+                    return f"({fmt_time(ans.duration_ns)})\n{ans_str}"
                 else:
                     return f"({fmt_time(ans.duration_ns)}): {ans.value}"
 

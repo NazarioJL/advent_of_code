@@ -97,8 +97,10 @@ DecoratedSolutionFuncTypeDef: TypeAlias = Callable[[str], Solution]
 P = ParamSpec("P")
 T = TypeVar("T")
 
-PartialSolutionFuncTypeDef: TypeAlias = Callable[[str], AnswerType]
-DecoratedPartialSolutionFuncTypeDef: TypeAlias = Callable[[str], PartialAnswer]
+PartialSolutionFuncTypeDef: TypeAlias = Callable[[P.args, P.kwargs], AnswerType]
+DecoratedPartialSolutionFuncTypeDef: TypeAlias = Callable[
+    [P.args, P.kwargs], PartialAnswer
+]
 
 
 class AdventOfCode:
@@ -152,16 +154,16 @@ class AdventOfCode:
         return inner
 
     def partial(
-        self,
+        self, part: int
     ) -> Callable[[PartialSolutionFuncTypeDef], DecoratedPartialSolutionFuncTypeDef]:
         def inner(
             func: PartialSolutionFuncTypeDef,
         ) -> DecoratedPartialSolutionFuncTypeDef:
             @wraps(func)
-            def wrapper(s: str) -> PartialAnswer:
+            def wrapper(*args: P.args, **kwargs: P.kwargs) -> PartialAnswer:
 
                 before = time.perf_counter_ns()
-                result = func(s)
+                result = func(*args, **kwargs)
                 after = time.perf_counter_ns()
                 dur = after - before
 

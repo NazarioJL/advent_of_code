@@ -334,7 +334,6 @@ TEST_INPUT = """\
     ((TEST_INPUT, (3068, 1514285714288)),),
 )
 def test_solve(input_s: str, expected: tuple[()]) -> None:
-
     assert solve(input_s).as_tuple() == expected
 
 

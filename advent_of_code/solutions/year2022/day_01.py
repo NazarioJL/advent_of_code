@@ -13,8 +13,7 @@ DAY = 1
 @aoc.solution(year=YEAR, day=DAY)
 def solve(s: str) -> Solution:
     totals = [
-        sum(int(num_s) for num_s in group.splitlines())
-        for group in s.split("\n\n")
+        sum(int(num_s) for num_s in group.splitlines()) for group in s.split("\n\n")
     ]
     totals.sort(reverse=True)
     return totals[0], sum(totals[0:3])

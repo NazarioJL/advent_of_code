@@ -174,7 +174,6 @@ def calc_max_pressure(
     def calc_max_pressure_rec(
         valve: str, valve_status: int, remaining_steps: int
     ) -> int:
-
         if remaining_steps == 0:
             return 0
 
@@ -237,7 +236,6 @@ def calc_max_pressure_with_visualization(
         step_count: int,
         state_list: StateList,
     ) -> None:
-
         """Depth first search"""
         nonlocal max_steps
         nonlocal max_pressure

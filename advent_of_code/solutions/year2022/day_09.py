@@ -73,7 +73,6 @@ class Operation(NamedTuple):
 
 
 def print_rope(rope: list[Point2D]) -> None:
-
     rope_spots = {}
     min_x, max_x, min_y, max_y = None, None, None, None
 

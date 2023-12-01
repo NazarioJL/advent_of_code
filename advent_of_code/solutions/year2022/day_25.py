@@ -57,7 +57,6 @@ def itos(num: int) -> str:
     while curr_power > 0:
         curr_sum = curr_sum - (curr_base << 1)
         for cf in (-2, -1, 0, 1, 2):
-
             candidate = num - cf * curr_base
 
             if abs(candidate) < curr_sum:

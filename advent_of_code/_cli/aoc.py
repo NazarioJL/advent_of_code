@@ -78,7 +78,6 @@ def create_solution(
     solution_path: str = None,
     template_path: str = None,
 ) -> None:
-
     click.echo()
     click.secho(
         f"Creating the solution skeleton for Year: [{year}] - Day: [{day}]",

@@ -118,7 +118,6 @@ class AdventOfCode:
 
             @wraps(func)
             def wrapper(s: str) -> Solution:
-
                 before = time.perf_counter_ns()
                 result = func(s)
                 after = time.perf_counter_ns()
@@ -161,7 +160,6 @@ class AdventOfCode:
         ) -> DecoratedPartialSolutionFuncTypeDef:
             @wraps(func)
             def wrapper(*args: P.args, **kwargs: P.kwargs) -> PartialAnswer:
-
                 before = time.perf_counter_ns()
                 result = func(*args, **kwargs)
                 after = time.perf_counter_ns()

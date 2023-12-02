@@ -158,7 +158,7 @@ class AdventOfCode:
         def inner(
             func: PartialSolutionFuncTypeDef,
         ) -> DecoratedPartialSolutionFuncTypeDef:
-            @wraps(func)
+            @wraps(func)  # type: ignore
             def wrapper(*args: P.args, **kwargs: P.kwargs) -> PartialAnswer:
                 before = time.perf_counter_ns()
                 result = func(*args, **kwargs)

@@ -11,10 +11,9 @@ YEAR = 2023
 DAY = 1
 
 
-DIGIT_TO_NUM = {str(v): v for v in range(0, 10)}
+DIGIT_TO_NUM = {str(v): v for v in range(1, 10)}
 
 STRING_TO_NUM = {
-    # "zero": 0,
     "one": 1,
     "two": 2,
     "three": 3,
@@ -42,7 +41,8 @@ def find_occurrences(val: str, sub: str) -> Sequence[int]:
 
 def get_calibration_value(code: str, lookup: dict[str, int]) -> int:
     """
-    Get the calibration value from the input data. This is done by concatenating the first occurrence of a number with the last to produce a 2-digit integer.
+    Get the calibration value from the input data. This is done by concatenating the
+    first occurrence of a number with the last to produce a 2-digit integer.
 
     Remarks:
         This currently is unnecessarily slow. It can be reduced from n * log(n) to n.
@@ -61,7 +61,7 @@ def get_calibration_value(code: str, lookup: dict[str, int]) -> int:
     if not nums_with_pos:
         raise ValueError(f"Unexpected code: '{code}'")
 
-    return nums_with_pos[0][1] * 10 + nums_with_pos[-1][1]
+    return nums_with_pos[0][1] * 10 + nums_with_pos[-1][1]  # Slow version
 
 
 def get_calibration_sum(codes: list[str], lookup: dict[str, int]) -> int:

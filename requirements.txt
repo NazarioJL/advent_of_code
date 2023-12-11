@@ -3,4 +3,5 @@ bidict
 click
 Jinja2
 more_itertools
+Pillow
 pytest

@@ -34,13 +34,13 @@ GetAdjacentFuncTypeDef = Callable[
 HeuristicFuncTypeDef = Callable[[AStarState, AStarState], AStarCostType]
 
 
-def a_star_search(
+def a_star_search(  # noqa: C901
     start: AStarState,
-    goal: AStarState,
+    goal: AStarState | Callable[[AStarState], bool],
     get_adjacent: GetAdjacentFuncTypeDef,
     heuristic: HeuristicFuncTypeDef,
     max_cost: AStarCostType | None = None,
-) -> Iterable[tuple[AStarState, AStarCostType]]:
+) -> list[tuple[AStarState, AStarCostType]]:
     came_from: dict[AStarState, AStarState | None] = {}
     cost_so_far: dict[AStarState, AStarCostType] = {}
 
@@ -50,6 +50,16 @@ def a_star_search(
     pq: list[tuple[AStarCostType, AStarState]] = [(_zero_cost, start)]
 
     found = False
+    found_goal = None
+
+    if callable(goal):
+        is_goal = goal
+    else:
+
+        def is_goal_fun(state: AStarState) -> bool:
+            return state == goal
+
+        is_goal = is_goal_fun
 
     while pq:
         priority, current = heappop(pq)
@@ -61,8 +71,9 @@ def a_star_search(
                     f"Cannot do better than {max_cost}, lowest cost at: {priority}"
                 )
 
-        if current == goal:
+        if is_goal(current):
             found = True
+            found_goal = current
             break
         for adj, cost_to_adj in get_adjacent(current):
             new_cost = cost_so_far[current] + cost_to_adj
@@ -76,7 +87,7 @@ def a_star_search(
         raise PathNotFoundError
 
     path = []
-    node: AStarState | None = goal
+    node: AStarState | None = found_goal
 
     while node != start:
         if node is None:

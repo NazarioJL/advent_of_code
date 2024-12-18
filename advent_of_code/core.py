@@ -91,11 +91,11 @@ SolutionReturnTypeDef: TypeAlias = Union[
     tuple[AnswerType, AnswerType],
 ]
 
-SolutionFuncTypeDef: TypeAlias = Callable[[str], SolutionReturnTypeDef]
-DecoratedSolutionFuncTypeDef: TypeAlias = Callable[[str], Solution]
-
 P = ParamSpec("P")
 T = TypeVar("T")
+
+SolutionFuncTypeDef: TypeAlias = Callable[[str, P.args, P.kwargs], SolutionReturnTypeDef]
+DecoratedSolutionFuncTypeDef: TypeAlias = Callable[[str, P.args, P.kwargs], Solution]
 
 PartialSolutionFuncTypeDef: TypeAlias = Callable[[P.args, P.kwargs], AnswerType]
 DecoratedPartialSolutionFuncTypeDef: TypeAlias = Callable[
@@ -117,9 +117,9 @@ class AdventOfCode:
             _original_func = func
 
             @wraps(func)
-            def wrapper(s: str) -> Solution:
+            def wrapper(s: str, *args: P.args, **kwargs: P.kwargs) -> Solution:
                 before = time.perf_counter_ns()
-                result = func(s)
+                result = func(s, *args, **kwargs)
                 after = time.perf_counter_ns()
                 dur = after - before
 

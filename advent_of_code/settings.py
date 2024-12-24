@@ -23,7 +23,9 @@ TEST_INPUT = \"\"\"\\
 
 @pytest.mark.parametrize(
     ("input_s", "expected"),
-    ((TEST_INPUT, ()),),
+    [
+        (TEST_INPUT, ()),
+    ],
 )
 def test_solve(input_s: str, expected: tuple[()]) -> None:
     assert solve(input_s).as_tuple() == expected

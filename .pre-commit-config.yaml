@@ -15,10 +15,15 @@ repos:
       - id: requirements-txt-fixer
       - id: mixed-line-ending
         args: [ '--fix=auto' ]
-  - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.9.0
+  - repo: https://github.com/Tesla2000/black-compatible-reorder-python-imports
+    rev: v0.0.1
     hooks:
       - id: reorder-python-imports
+        args:
+          [
+            --retain-pre-import,
+            'True',
+          ]
   - repo: https://github.com/myint/autoflake
     rev: v2.0.0
     hooks:

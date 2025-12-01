@@ -1,3 +1,4 @@
+import functools
 import time
 from functools import wraps
 from typing import Callable
@@ -94,7 +95,9 @@ SolutionReturnTypeDef: TypeAlias = Union[
 P = ParamSpec("P")
 T = TypeVar("T")
 
-SolutionFuncTypeDef: TypeAlias = Callable[[str, P.args, P.kwargs], SolutionReturnTypeDef]
+SolutionFuncTypeDef: TypeAlias = Callable[
+    [str, P.args, P.kwargs], SolutionReturnTypeDef
+]
 DecoratedSolutionFuncTypeDef: TypeAlias = Callable[[str, P.args, P.kwargs], Solution]
 
 PartialSolutionFuncTypeDef: TypeAlias = Callable[[P.args, P.kwargs], AnswerType]

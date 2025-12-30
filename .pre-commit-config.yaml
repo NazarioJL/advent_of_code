@@ -1,45 +1,47 @@
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
-    hooks:
-      - id: trailing-whitespace
-      - id: check-added-large-files
-        exclude: ^data/
-      - id: check-ast
-      - id: check-json
-      - id: check-merge-conflict
-      - id: check-xml
-      - id: check-yaml
-      - id: debug-statements
-      - id: end-of-file-fixer
-      - id: requirements-txt-fixer
-      - id: mixed-line-ending
-        args: [ '--fix=auto' ]
-  - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.16.0
-    hooks:
-      - id: reorder-python-imports
-  - repo: https://github.com/myint/autoflake
-    rev: v2.3.1
-    hooks:
-      - id: autoflake
-        args: [
-          --in-place,
-          --remove-all-unused-imports,
-          --remove-unused-variables,
-        ]
-  - repo: https://github.com/psf/black
-    rev: 25.11.0
-    hooks:
-      - id: black
-        language_version: python3
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.3.0
-    hooks:
-      - id: flake8
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.0
-    hooks:
-      - id: mypy
-        additional_dependencies: [attrs==22.1.0, pytest==7.2.0, click==8.1.3]
-        args: [--python-version=3.10]
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+    - id: trailing-whitespace
+    - id: check-added-large-files
+      exclude: ^data/
+    - id: check-ast
+    - id: check-json
+    - id: check-merge-conflict
+    - id: check-xml
+    - id: check-yaml
+    - id: debug-statements
+    - id: end-of-file-fixer
+    - id: requirements-txt-fixer
+    - id: mixed-line-ending
+      args: [ '--fix=auto' ]
+- repo: https://github.com/pappasam/toml-sort
+  rev: v0.24.3
+  hooks:
+    - id: toml-sort
+      name: toml-sort
+      entry: toml-sort
+      args: [ --check ]
+      language: python
+      types: [ toml ]
+    - id: toml-sort-fix
+      name: toml-sort-fix
+      entry: toml-sort
+      args: [ --in-place ]
+      language: python
+      types: [ toml ]
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.14.10
+  hooks:
+    # Run the linter.
+    - id: ruff-check
+      args: [ --fix ]
+    # Run the formatter.
+    - id: ruff-format
+- repo: https://github.com/NSPC911/ty-pre-commit
+  # ty version.
+  rev: v0.0.8
+  hooks:
+    # Run the linter.
+    - id: ty-check

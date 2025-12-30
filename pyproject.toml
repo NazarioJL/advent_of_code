@@ -1,32 +1,26 @@
-[tool.black]
-line-length = 88
-
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = ["setuptools", "wheel"]
 
+[tool.black]
+line-length = 88
 
-[tool.mypy]
-python_version = "3.10"
-check_untyped_defs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-disallow_untyped_decorators = true
-disallow_any_unimported = true
-warn_return_any = true
-warn_unused_ignores = true
-no_implicit_optional = true
-show_error_codes = true
-ignore_missing_imports = true
+[tool.ruff]
+exclude = ["./build", ".hatch", ".venv", "private"]
+indent-width = 4
+line-length = 88
 
+[tool.ruff.lint]
+exclude = ["./build", ".hatch", ".venv", "private"]
+select = ["A", "B", "C", "E4", "E7", "E9", "F", "I", "PT", "PYI", "Q", "R", "RUF", "W"]
 
-[[tool.mypy.overrides]]
-module = "advent_of_code._cli.aoc"
-disallow_untyped_decorators = false
-no_implicit_optional = false
+[tool.ruff.lint.isort]
+force-single-line = true
+known-first-party = ["advent_of_code"]
+lines-between-types = 1
 
+[tool.ruff.lint.mccabe]
+max-complexity = 10
 
-[[tool.mypy.overrides]]
-module = "test.*"
-check_untyped_defs = false
-disallow_untyped_defs = false
+[tool.ty.rules]
+unresolved-import = "ignore"

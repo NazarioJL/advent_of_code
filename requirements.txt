@@ -3,5 +3,9 @@ bidict
 click
 Jinja2
 more_itertools
+numpy
 Pillow
 pytest
+rich
+sympy
+z3-solver
